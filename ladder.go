@@ -31,11 +31,19 @@ func convertByLadder[U comparable, T int32 | int64 | float32 | float64](amount T
 	var f int = 1
 
 	for idx := idxFrom; (idx + 1) <= idxTo; idx++ {
+		prev := f
 		f *= ladder[idx+1].fromPrev
+		if f/ladder[idx+1].fromPrev != prev {
+			return 0, false // factor overflow
+		}
 	}
 
 	for idx := idxFrom; idx > idxTo; idx-- {
+		prev := f
 		f *= ladder[idx].fromPrev
+		if f/ladder[idx].fromPrev != prev {
+			return 0, false // factor overflow
+		}
 	}
 
 	ft := T(f)
@@ -46,7 +54,11 @@ func convertByLadder[U comparable, T int32 | int64 | float32 | float64](amount T
 		}
 		amount /= ft
 	} else {
-		amount *= ft
+		result := amount * ft
+		if result/ft != amount {
+			return 0, false // overflow
+		}
+		amount = result
 	}
 
 	return amount, true

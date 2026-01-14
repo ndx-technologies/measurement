@@ -214,4 +214,15 @@ func TestTryConvertExactVolume(t *testing.T) {
 			}
 		}
 	})
+
+	t.Run("amount overflow", func(t *testing.T) {
+		// 10 km³ → mm³ requires 10 × 10^18 = 10^19, which overflows int64 max (~9.2×10^18)
+		if v, ok := TryConvertExactVolume(int64(10), UnitCubicKiloMeters, UnitCubicMilliMeters); ok {
+			t.Error("expected overflow", v)
+		}
+		// but 1 km³ → mm³ = 10^18, which fits
+		if v, ok := TryConvertExactVolume(int64(1), UnitCubicKiloMeters, UnitCubicMilliMeters); !ok || v != 1_000_000_000_000_000_000 {
+			t.Error("expected exact conversion", v, ok)
+		}
+	})
 }
