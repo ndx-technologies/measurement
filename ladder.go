@@ -2,7 +2,7 @@ package measurement
 
 type ladderItem[U comparable] struct {
 	unit     U
-	fromPrev int64
+	fromPrev int
 }
 
 // ladder is a sequence of units with conversion factors between adjacent units.
