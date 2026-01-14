@@ -156,48 +156,48 @@ type unitVolumeLadderItem struct {
 type unitVolumeLadder []unitVolumeLadderItem
 
 var unitVolumeLiterLadder = [...]unitVolumeLadderItem{
-	{unit: UnitMilliLiters, fromPrev: 1},
-	{unit: UnitCentiLiters, fromPrev: 10},
-	{unit: UnitDeciLiters, fromPrev: 10},
-	{unit: UnitLiters, fromPrev: 10},
-	{unit: UnitKiloLiters, fromPrev: 1000},
-	{unit: UnitMegaLiters, fromPrev: 1000},
+	{UnitMilliLiters, 1},
+	{UnitCentiLiters, 10},
+	{UnitDeciLiters, 10},
+	{UnitLiters, 10},
+	{UnitKiloLiters, 1000},
+	{UnitMegaLiters, 1000},
 }
 
 var unitVolumeMeterLadder = [...]unitVolumeLadderItem{
-	{unit: UnitCubicMilliMeters, fromPrev: 1},
-	{unit: UnitCubicCentiMeters, fromPrev: 10 * 10 * 10},
-	{unit: UnitCubicDeciMeters, fromPrev: 10 * 10 * 10},
-	{unit: UnitCubicMeters, fromPrev: 10 * 10 * 10},
-	{unit: UnitCubicKiloMeters, fromPrev: 1000 * 1000 * 1000},
+	{UnitCubicMilliMeters, 1},
+	{UnitCubicCentiMeters, 10 * 10 * 10},
+	{UnitCubicDeciMeters, 10 * 10 * 10},
+	{UnitCubicMeters, 10 * 10 * 10},
+	{UnitCubicKiloMeters, 1000 * 1000 * 1000},
 }
 
 var unitVolumeInchLadder = [...]unitVolumeLadderItem{
-	{unit: UnitCubicInches, fromPrev: 1},
-	{unit: UnitCubicFeet, fromPrev: 12 * 12 * 12},
-	{unit: UnitCubicYards, fromPrev: 3 * 3 * 3},
-	{unit: UnitCubicMiles, fromPrev: 1760 * 1760 * 1760},
+	{UnitCubicInches, 1},
+	{UnitCubicFeet, 12 * 12 * 12},
+	{UnitCubicYards, 3 * 3 * 3},
+	{UnitCubicMiles, 1760 * 1760 * 1760},
 }
 
 var unitVolumeImperialLadder = [...]unitVolumeLadderItem{
-	{unit: UnitImperialTeaspoons, fromPrev: 1},
-	{unit: UnitImperialTablespoons, fromPrev: 3},
-	{unit: UnitImperialFluidOunces, fromPrev: 2},
-	{unit: UnitImperialGills, fromPrev: 5},
-	{unit: UnitImperialPints, fromPrev: 4},
-	{unit: UnitImperialQuarts, fromPrev: 2},
-	{unit: UnitImperialGallons, fromPrev: 4},
-	{unit: UnitBushels, fromPrev: 8},
+	{UnitImperialTeaspoons, 1},
+	{UnitImperialTablespoons, 3},
+	{UnitImperialFluidOunces, 2},
+	{UnitImperialGills, 5},
+	{UnitImperialPints, 4},
+	{UnitImperialQuarts, 2},
+	{UnitImperialGallons, 4},
+	{UnitBushels, 8},
 }
 
 var unitVolumeUSALadder = [...]unitVolumeLadderItem{
-	{unit: UnitTeaspoons, fromPrev: 1},
-	{unit: UnitTablespoons, fromPrev: 3},
-	{unit: UnitFluidOunces, fromPrev: 2},
-	{unit: UnitCups, fromPrev: 8},
-	{unit: UnitPints, fromPrev: 2},
-	{unit: UnitQuarts, fromPrev: 2},
-	{unit: UnitGallons, fromPrev: 4},
+	{UnitTeaspoons, 1},
+	{UnitTablespoons, 3},
+	{UnitFluidOunces, 2},
+	{UnitCups, 8},
+	{UnitPints, 2},
+	{UnitQuarts, 2},
+	{UnitGallons, 4},
 }
 
 func idxUnitVolumeInLadder(unit UnitVolume, ladder unitVolumeLadder) int {
@@ -244,31 +244,11 @@ var unitVolumeLadders = [...]struct {
 	factor float64
 	target UnitVolume
 }{
-	{
-		ladder: unitVolumeMeterLadder[:],
-		target: UnitCubicDeciMeters,
-		factor: 1,
-	},
-	{
-		ladder: unitVolumeInchLadder[:],
-		target: UnitCubicFeet,
-		factor: litersMulApproxCubicFeet,
-	},
-	{
-		ladder: unitVolumeImperialLadder[:],
-		target: UnitImperialPints,
-		factor: litersMulImperialPint,
-	},
-	{
-		ladder: unitVolumeUSALadder[:],
-		target: UnitPints,
-		factor: litersMulPints,
-	},
-	{
-		ladder: unitVolumeLiterLadder[:],
-		target: UnitLiters,
-		factor: 1,
-	},
+	{ladder: unitVolumeMeterLadder[:], target: UnitCubicDeciMeters, factor: 1},
+	{ladder: unitVolumeInchLadder[:], target: UnitCubicFeet, factor: litersMulApproxCubicFeet},
+	{ladder: unitVolumeImperialLadder[:], target: UnitImperialPints, factor: litersMulImperialPint},
+	{ladder: unitVolumeUSALadder[:], target: UnitPints, factor: litersMulPints},
+	{ladder: unitVolumeLiterLadder[:], target: UnitLiters, factor: 1},
 }
 
 func tryGetSameVolumeLadder(a, b UnitVolume) (idxA, idxB int, ladder *unitVolumeLadder) {

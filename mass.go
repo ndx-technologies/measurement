@@ -128,16 +128,16 @@ type unitMassLadderType []unitMassLadderItem
 // how many m[i] = how many i-1 units needed for this unit
 // this constructs 10^3 ladder of unit transformations
 var unitMassLadder = [...]unitMassLadderItem{
-	{unit: UnitPicograms, fromPrev: 1},
-	{unit: UnitNanograms, fromPrev: 1000},
-	{unit: UnitMicrograms, fromPrev: 1000},
-	{unit: UnitMilligrams, fromPrev: 1000},
-	{unit: UnitCentigrams, fromPrev: 10},
-	{unit: UnitDecigrams, fromPrev: 10},
-	{unit: UnitCarats, fromPrev: 2},
-	{unit: UnitGrams, fromPrev: 5},
-	{unit: UnitKilograms, fromPrev: 1000},
-	{unit: UnitMetricTons, fromPrev: 1000},
+	{UnitPicograms, 1},
+	{UnitNanograms, 1000},
+	{UnitMicrograms, 1000},
+	{UnitMilligrams, 1000},
+	{UnitCentigrams, 10},
+	{UnitDecigrams, 10},
+	{UnitCarats, 2},
+	{UnitGrams, 5},
+	{UnitKilograms, 1000},
+	{UnitMetricTons, 1000},
 }
 
 func idxUnitMassInLadder(unit UnitMass) int {
