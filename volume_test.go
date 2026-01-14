@@ -159,3 +159,35 @@ func TestTryConvertExactVolume_CrossSystemFails(t *testing.T) {
 		}
 	}
 }
+
+func TestTryConvertExactVolume(t *testing.T) {
+	type VolumeInt64 struct {
+		Amount int64
+		Unit   UnitVolume
+	}
+
+	t.Run("exact", func(t *testing.T) {
+		tests := [][2]VolumeInt64{
+			{{1000, UnitMilliLiters}, {1, UnitLiters}},
+			{{1, UnitLiters}, {1000, UnitMilliLiters}},
+			{{10, UnitMilliLiters}, {1, UnitCentiLiters}},
+		}
+		for _, tc := range tests {
+			if v, ok := TryConvertExactVolume(tc[0].Amount, tc[0].Unit, tc[1].Unit); !ok || v != tc[1].Amount {
+				t.Error(tc, v, ok)
+			}
+		}
+	})
+
+	t.Run("not exact", func(t *testing.T) {
+		tests := []VolumeInt64{
+			{5, UnitMilliLiters},
+			{100, UnitMilliLiters},
+		}
+		for _, tc := range tests {
+			if v, ok := TryConvertExactVolume(tc.Amount, tc.Unit, UnitLiters); ok {
+				t.Error(tc, v)
+			}
+		}
+	})
+}

@@ -39,6 +39,9 @@ func convertByLadder[U comparable, T int32 | int64 | float32 | float64](amount T
 	}
 
 	if idxFrom < idxTo {
+		if (amount/f)*f != amount {
+			return 0, false // loss of precision without fractions
+		}
 		amount /= f
 	} else {
 		amount *= f
