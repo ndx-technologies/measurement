@@ -62,7 +62,6 @@ func (s Mass) Convert(unit UnitMass) Mass {
 	return Mass{Amount: convertMassApproxFromGram(convertMassApproxToGram(s.Amount, s.Unit), unit), Unit: unit}
 }
 
-// TryConvertExactMass using only integer factors
 func TryConvertExactMass[T int32 | int64 | float32 | float64](amount T, from, to UnitMass) (v T, ok bool) {
 	return convertByLadder(amount, from, to, unitMassLadder)
 }

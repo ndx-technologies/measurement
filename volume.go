@@ -65,7 +65,6 @@ func (s Volume) Convert(unit UnitVolume) Volume {
 	return Volume{Amount: amount / factor, Unit: unit}
 }
 
-// TryConvertExactVolume using only integer factors
 func TryConvertExactVolume[T int32 | int64 | float32 | float64](amount T, from, to UnitVolume) (v T, ok bool) {
 	for _, q := range unitVolumeLadders {
 		if v, ok := convertByLadder(amount, from, to, q.ladder); ok {
