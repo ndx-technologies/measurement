@@ -67,14 +67,12 @@ func (s Volume) Convert(unit UnitVolume) Volume {
 
 // TryConvertExactVolume using only integer factors
 func TryConvertExactVolume[T int32 | int64 | float32 | float64](amount T, from, to UnitVolume) (v T, ok bool) {
-	if from == to || to == UnitVolumeUnknown || amount == 0 {
-		return amount, true
+	for _, q := range unitVolumeLadders {
+		if v, ok := convertByLadder(amount, from, to, q.ladder); ok {
+			return v, true
+		}
 	}
-	idxFrom, idxTo, ladder := tryGetSameVolumeLadder(from, to)
-	if ladder == nil || idxFrom == -1 || idxTo == -1 {
-		return 0, false
-	}
-	return convertVolumeExact(amount, idxFrom, idxTo, *ladder), true
+	return 0, false
 }
 
 // skipping `metric cup` and `acre-feet`, they are not in any ladder.
@@ -148,14 +146,7 @@ var UnitVolumeAll = [...]UnitVolume{
 	UnitImperialTeaspoons,
 }
 
-type unitVolumeLadderItem struct {
-	unit     UnitVolume
-	fromPrev int64
-}
-
-type unitVolumeLadder []unitVolumeLadderItem
-
-var unitVolumeLiterLadder = [...]unitVolumeLadderItem{
+var unitVolumeLiterLadder = ladder[UnitVolume]{
 	{UnitMilliLiters, 1},
 	{UnitCentiLiters, 10},
 	{UnitDeciLiters, 10},
@@ -164,7 +155,7 @@ var unitVolumeLiterLadder = [...]unitVolumeLadderItem{
 	{UnitMegaLiters, 1000},
 }
 
-var unitVolumeMeterLadder = [...]unitVolumeLadderItem{
+var unitVolumeMeterLadder = ladder[UnitVolume]{
 	{UnitCubicMilliMeters, 1},
 	{UnitCubicCentiMeters, 10 * 10 * 10},
 	{UnitCubicDeciMeters, 10 * 10 * 10},
@@ -172,14 +163,14 @@ var unitVolumeMeterLadder = [...]unitVolumeLadderItem{
 	{UnitCubicKiloMeters, 1000 * 1000 * 1000},
 }
 
-var unitVolumeInchLadder = [...]unitVolumeLadderItem{
+var unitVolumeInchLadder = ladder[UnitVolume]{
 	{UnitCubicInches, 1},
 	{UnitCubicFeet, 12 * 12 * 12},
 	{UnitCubicYards, 3 * 3 * 3},
 	{UnitCubicMiles, 1760 * 1760 * 1760},
 }
 
-var unitVolumeImperialLadder = [...]unitVolumeLadderItem{
+var unitVolumeImperialLadder = ladder[UnitVolume]{
 	{UnitImperialTeaspoons, 1},
 	{UnitImperialTablespoons, 3},
 	{UnitImperialFluidOunces, 2},
@@ -190,7 +181,7 @@ var unitVolumeImperialLadder = [...]unitVolumeLadderItem{
 	{UnitBushels, 8},
 }
 
-var unitVolumeUSALadder = [...]unitVolumeLadderItem{
+var unitVolumeUSALadder = ladder[UnitVolume]{
 	{UnitTeaspoons, 1},
 	{UnitTablespoons, 3},
 	{UnitFluidOunces, 2},
@@ -200,39 +191,6 @@ var unitVolumeUSALadder = [...]unitVolumeLadderItem{
 	{UnitGallons, 4},
 }
 
-func idxUnitVolumeInLadder(unit UnitVolume, ladder unitVolumeLadder) int {
-	for i, u := range ladder {
-		if u.unit == unit {
-			return i
-		}
-	}
-	return -1
-}
-
-func convertVolumeExact[T int32 | int64 | float32 | float64](amount T, idxFrom, idxTo int, ladder unitVolumeLadder) T {
-	if idxFrom == idxTo {
-		return amount
-	}
-
-	var f T = 1
-
-	for idx := idxFrom; (idx + 1) <= idxTo; idx++ {
-		f *= T(ladder[idx+1].fromPrev)
-	}
-
-	for idx := idxFrom; idx > idxTo; idx-- {
-		f *= T(ladder[idx].fromPrev)
-	}
-
-	if idxFrom < idxTo {
-		amount /= f
-	} else {
-		amount *= f
-	}
-
-	return amount
-}
-
 const (
 	litersMulApproxCubicFeet = 28.3168
 	litersMulImperialPint    = 0.568261
@@ -240,34 +198,23 @@ const (
 )
 
 var unitVolumeLadders = [...]struct {
-	ladder unitVolumeLadder
+	ladder ladder[UnitVolume]
 	factor float64
 	target UnitVolume
 }{
-	{ladder: unitVolumeMeterLadder[:], target: UnitCubicDeciMeters, factor: 1},
-	{ladder: unitVolumeInchLadder[:], target: UnitCubicFeet, factor: litersMulApproxCubicFeet},
-	{ladder: unitVolumeImperialLadder[:], target: UnitImperialPints, factor: litersMulImperialPint},
-	{ladder: unitVolumeUSALadder[:], target: UnitPints, factor: litersMulPints},
-	{ladder: unitVolumeLiterLadder[:], target: UnitLiters, factor: 1},
-}
-
-func tryGetSameVolumeLadder(a, b UnitVolume) (idxA, idxB int, ladder *unitVolumeLadder) {
-	for i := range unitVolumeLadders {
-		idxA = idxUnitVolumeInLadder(a, unitVolumeLadders[i].ladder)
-		idxB = idxUnitVolumeInLadder(b, unitVolumeLadders[i].ladder)
-		if idxA != -1 && idxB != -1 {
-			return idxA, idxB, &unitVolumeLadders[i].ladder
-		}
-	}
-	return -1, -1, nil
+	{ladder: unitVolumeMeterLadder, target: UnitCubicDeciMeters, factor: 1},
+	{ladder: unitVolumeInchLadder, target: UnitCubicFeet, factor: litersMulApproxCubicFeet},
+	{ladder: unitVolumeImperialLadder, target: UnitImperialPints, factor: litersMulImperialPint},
+	{ladder: unitVolumeUSALadder, target: UnitPints, factor: litersMulPints},
+	{ladder: unitVolumeLiterLadder, target: UnitLiters, factor: 1},
 }
 
 // move from ladder to conversion point, and convert.
 // if factor is 1, no conversion to float is needed, otherwise cast to float and multiply.
 func convertVolumeToLiters[T int64 | float32 | float64](amount T, unit UnitVolume) (T, float64) {
 	for _, q := range unitVolumeLadders {
-		if idxFrom, idxTo := idxUnitVolumeInLadder(unit, q.ladder), idxUnitVolumeInLadder(q.target, q.ladder); idxFrom != -1 && idxTo != -1 {
-			return convertVolumeExact(amount, idxFrom, idxTo, q.ladder), q.factor
+		if v, ok := TryConvertExactVolume(amount, unit, q.target); ok {
+			return v, q.factor
 		}
 	}
 	return amount, 1
@@ -277,8 +224,8 @@ func convertVolumeToLiters[T int64 | float32 | float64](amount T, unit UnitVolum
 // if factor is not 1, then cast to float and divide.
 func convertVolumeFromLiters[T int64 | float32 | float64](amount T, unit UnitVolume) (T, float64) {
 	for _, q := range unitVolumeLadders {
-		if idxFrom, idxTo := idxUnitVolumeInLadder(q.target, q.ladder), idxUnitVolumeInLadder(unit, q.ladder); idxFrom != -1 && idxTo != -1 {
-			return convertVolumeExact(amount, idxFrom, idxTo, q.ladder), q.factor
+		if v, ok := TryConvertExactVolume(amount, q.target, unit); ok {
+			return v, q.factor
 		}
 	}
 	return amount, 1

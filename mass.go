@@ -64,14 +64,7 @@ func (s Mass) Convert(unit UnitMass) Mass {
 
 // TryConvertExactMass using only integer factors
 func TryConvertExactMass[T int32 | int64 | float32 | float64](amount T, from, to UnitMass) (v T, ok bool) {
-	if from == to || to == UnitMassUnknown || amount == 0 {
-		return amount, true
-	}
-	idxFrom, idxTo, ladder := tryGetSameMassLadder(from, to)
-	if ladder == nil || idxFrom == -1 || idxTo == -1 {
-		return 0, false
-	}
-	return convertMassExact(amount, idxFrom, idxTo, *ladder), true
+	return convertByLadder(amount, from, to, unitMassLadder)
 }
 
 type UnitMass uint8
@@ -116,18 +109,11 @@ var UnitMassAll = [...]UnitMass{
 	UnitSlugs,
 }
 
-type unitMassLadderItem struct {
-	unit     UnitMass
-	fromPrev int64
-}
-
-type unitMassLadderType []unitMassLadderItem
-
 // this is modified SI conversion ladder
 // it utilizes the fact that measurements likely to have at most 3 decimal places or else they can be next unit
 // how many m[i] = how many i-1 units needed for this unit
 // this constructs 10^3 ladder of unit transformations
-var unitMassLadder = [...]unitMassLadderItem{
+var unitMassLadder = ladder[UnitMass]{
 	{UnitPicograms, 1},
 	{UnitNanograms, 1000},
 	{UnitMicrograms, 1000},
@@ -140,47 +126,6 @@ var unitMassLadder = [...]unitMassLadderItem{
 	{UnitMetricTons, 1000},
 }
 
-func idxUnitMassInLadder(unit UnitMass) int {
-	for i, u := range unitMassLadder {
-		if u.unit == unit {
-			return i
-		}
-	}
-	return -1
-}
-
-func factorFromMassLadder[T int64 | float64](from, to int) T {
-	var f T = 1
-	for idx := from; (idx + 1) <= to; idx++ {
-		f *= T(unitMassLadder[idx+1].fromPrev)
-	}
-	for idx := from; idx > to; idx-- {
-		f *= T(unitMassLadder[idx].fromPrev)
-	}
-	return f
-}
-
-func convertMassApproxInLadder(amount float64, from, to UnitMass) float64 {
-	if from == to {
-		return amount
-	}
-
-	idxFrom, idxTo := idxUnitMassInLadder(from), idxUnitMassInLadder(to)
-	if idxFrom == -1 || idxTo == -1 || idxFrom == idxTo {
-		return amount
-	}
-
-	f := factorFromMassLadder[float64](idxFrom, idxTo)
-
-	if idxFrom < idxTo {
-		amount /= f
-	} else {
-		amount *= f
-	}
-
-	return amount
-}
-
 // masses are a bit not linear. slugs, ounces troy, and short tones are not in same ladder.
 const (
 	gramMulApproxUnitOunces     = 28.349523125
@@ -191,7 +136,7 @@ const (
 	gramMulApproxUnitShortTons  = 907184.74
 )
 
-func convertMassApproxToGram(amount float64, unit UnitMass) float64 {
+func convertMassApproxToGram[T float32 | float64](amount T, unit UnitMass) T {
 	switch unit {
 	case UnitOunces:
 		return amount * gramMulApproxUnitOunces
@@ -206,11 +151,12 @@ func convertMassApproxToGram(amount float64, unit UnitMass) float64 {
 	case UnitSlugs:
 		return amount * gramMulApproxUnitSlugs
 	default:
-		return convertMassApproxInLadder(amount, unit, UnitGrams)
+		v, _ := convertByLadder(amount, unit, UnitGrams, unitMassLadder)
+		return v
 	}
 }
 
-func convertMassApproxFromGram(amount float64, unit UnitMass) float64 {
+func convertMassApproxFromGram[T float32 | float64](amount T, unit UnitMass) T {
 	switch unit {
 	case UnitOunces:
 		return amount / gramMulApproxUnitOunces
@@ -225,40 +171,7 @@ func convertMassApproxFromGram(amount float64, unit UnitMass) float64 {
 	case UnitSlugs:
 		return amount / gramMulApproxUnitSlugs
 	default:
-		return convertMassApproxInLadder(amount, UnitGrams, unit)
+		v, _ := convertByLadder(amount, UnitGrams, unit, unitMassLadder)
+		return v
 	}
-}
-
-func tryGetSameMassLadder(a, b UnitMass) (idxA, idxB int, ladder *unitMassLadderType) {
-	idxA = idxUnitMassInLadder(a)
-	idxB = idxUnitMassInLadder(b)
-	if idxA != -1 && idxB != -1 {
-		l := unitMassLadderType(unitMassLadder[:])
-		return idxA, idxB, &l
-	}
-	return -1, -1, nil
-}
-
-func convertMassExact[T int32 | int64 | float32 | float64](amount T, idxFrom, idxTo int, ladder unitMassLadderType) T {
-	if idxFrom == idxTo {
-		return amount
-	}
-
-	var f T = 1
-
-	for idx := idxFrom; (idx + 1) <= idxTo; idx++ {
-		f *= T(ladder[idx+1].fromPrev)
-	}
-
-	for idx := idxFrom; idx > idxTo; idx-- {
-		f *= T(ladder[idx].fromPrev)
-	}
-
-	if idxFrom < idxTo {
-		amount /= f
-	} else {
-		amount *= f
-	}
-
-	return amount
 }
