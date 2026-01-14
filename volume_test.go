@@ -146,6 +146,30 @@ func TestTryConvertExactVolume_Int64Precision(t *testing.T) {
 	}
 }
 
+// TestLadderIntFactorPrecision demonstrates why we use int for factor calculation
+// instead of float64. float64 can only represent integers exactly up to 2^53.
+// Values like 2^53+1 = 9007199254740993 lose precision in float64.
+func TestLadderIntFactorPrecision(t *testing.T) {
+	// 2^53 + 1 cannot be represented exactly in float64
+	const val = int64(9_007_199_254_740_993)
+	if int64(float64(val)) == val {
+		t.Fatal("expected float64 to lose precision for 2^53+1")
+	}
+
+	// Our int-based factor calculation preserves precision for large values
+	// mm³ to km³: factor = 1000 * 1000 * 1000 * 1_000_000_000 = 10^18
+	amount := int64(1_000_000_000_000_000_000)
+	v, ok := TryConvertExactVolume(amount, UnitCubicMilliMeters, UnitCubicKiloMeters)
+	if !ok || v != 1 {
+		t.Error(v, ok)
+	}
+
+	back, ok := TryConvertExactVolume(v, UnitCubicKiloMeters, UnitCubicMilliMeters)
+	if !ok || back != amount {
+		t.Error(back, ok)
+	}
+}
+
 func TestTryConvertExactVolume_CrossSystemFails(t *testing.T) {
 	tests := [][2]UnitVolume{
 		{UnitLiters, UnitGallons},

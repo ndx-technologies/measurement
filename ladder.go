@@ -28,23 +28,25 @@ func convertByLadder[U comparable, T int32 | int64 | float32 | float64](amount T
 		return amount, false
 	}
 
-	var f T = 1
+	var f int = 1
 
 	for idx := idxFrom; (idx + 1) <= idxTo; idx++ {
-		f *= T(ladder[idx+1].fromPrev)
+		f *= ladder[idx+1].fromPrev
 	}
 
 	for idx := idxFrom; idx > idxTo; idx-- {
-		f *= T(ladder[idx].fromPrev)
+		f *= ladder[idx].fromPrev
 	}
 
+	ft := T(f)
+
 	if idxFrom < idxTo {
-		if (amount/f)*f != amount {
+		if (amount/ft)*ft != amount {
 			return 0, false // loss of precision without fractions
 		}
-		amount /= f
+		amount /= ft
 	} else {
-		amount *= f
+		amount *= ft
 	}
 
 	return amount, true
