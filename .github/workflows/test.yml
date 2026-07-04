@@ -22,4 +22,9 @@ jobs:
       - name: test
         env:
           GOEXPERIMENT: jsonv2
-        run: go test -cover ./...
+        run: go test -cover -coverprofile=coverage.txt ./...
+
+      - name: codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
