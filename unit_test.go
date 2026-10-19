@@ -25,6 +25,21 @@ func TestAllUnitUnique(t *testing.T) {
 	for _, q := range UnitDurationAll {
 		units = append(units, q.String())
 	}
+	for _, q := range UnitPowerAll {
+		units = append(units, q.String())
+	}
+	for _, q := range UnitDataStorageAll {
+		units = append(units, q.String())
+	}
+	for _, q := range UnitFrequencyAll {
+		units = append(units, q.String())
+	}
+	for _, q := range UnitChargeAll {
+		units = append(units, q.String())
+	}
+	for _, q := range UnitVoltageAll {
+		units = append(units, q.String())
+	}
 
 	all := make(map[string]bool, len(units))
 	for _, q := range units {

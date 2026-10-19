@@ -22,13 +22,23 @@ func (s *MeasureType) UnmarshalText(text []byte) error {
 		*s = MeasureTypeEnergy
 	case "duration":
 		*s = MeasureTypeDuration
+	case "power":
+		*s = MeasureTypePower
+	case "data_storage":
+		*s = MeasureTypeDataStorage
+	case "frequency":
+		*s = MeasureTypeFrequency
+	case "charge":
+		*s = MeasureTypeCharge
+	case "voltage":
+		*s = MeasureTypeVoltage
 	default:
 		return ErrUnknownMeasureType
 	}
 	return nil
 }
 
-var seq_bytes_MeasureType = [...][]byte{[]byte(""), []byte("mass"), []byte("volume"), []byte("length"), []byte("area"), []byte("energy"), []byte("duration")}
+var seq_bytes_MeasureType = [...][]byte{[]byte(""), []byte("mass"), []byte("volume"), []byte("length"), []byte("area"), []byte("energy"), []byte("duration"), []byte("power"), []byte("data_storage"), []byte("frequency"), []byte("charge"), []byte("voltage")}
 
 func (s MeasureType) MarshalText() ([]byte, error) { return s.AppendText(nil) }
 
@@ -48,12 +58,22 @@ func (s MeasureType) AppendText(b []byte) ([]byte, error) {
 		return append(b, seq_bytes_MeasureType[5]...), nil
 	case MeasureTypeDuration:
 		return append(b, seq_bytes_MeasureType[6]...), nil
+	case MeasureTypePower:
+		return append(b, seq_bytes_MeasureType[7]...), nil
+	case MeasureTypeDataStorage:
+		return append(b, seq_bytes_MeasureType[8]...), nil
+	case MeasureTypeFrequency:
+		return append(b, seq_bytes_MeasureType[9]...), nil
+	case MeasureTypeCharge:
+		return append(b, seq_bytes_MeasureType[10]...), nil
+	case MeasureTypeVoltage:
+		return append(b, seq_bytes_MeasureType[11]...), nil
 	default:
 		return nil, ErrUnknownMeasureType
 	}
 }
 
-var seq_string_MeasureType = [...]string{"", "mass", "volume", "length", "area", "energy", "duration"}
+var seq_string_MeasureType = [...]string{"", "mass", "volume", "length", "area", "energy", "duration", "power", "data_storage", "frequency", "charge", "voltage"}
 
 func (s MeasureType) String() string {
 	switch s {
@@ -71,6 +91,16 @@ func (s MeasureType) String() string {
 		return seq_string_MeasureType[5]
 	case MeasureTypeDuration:
 		return seq_string_MeasureType[6]
+	case MeasureTypePower:
+		return seq_string_MeasureType[7]
+	case MeasureTypeDataStorage:
+		return seq_string_MeasureType[8]
+	case MeasureTypeFrequency:
+		return seq_string_MeasureType[9]
+	case MeasureTypeCharge:
+		return seq_string_MeasureType[10]
+	case MeasureTypeVoltage:
+		return seq_string_MeasureType[11]
 	default:
 		return ""
 	}

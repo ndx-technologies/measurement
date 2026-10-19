@@ -72,4 +72,19 @@ func TestNewFromStringInvalidUnit(t *testing.T) {
 	if _, err := NewDurationFromString("100"); err == nil {
 		t.Error("duration")
 	}
+	if _, err := NewPowerFromString("100"); err == nil {
+		t.Error("power")
+	}
+	if _, err := NewDataStorageFromString("100"); err == nil {
+		t.Error("data storage")
+	}
+	if _, err := NewFrequencyFromString("100"); err == nil {
+		t.Error("frequency")
+	}
+	if _, err := NewChargeFromString("100"); err == nil {
+		t.Error("charge")
+	}
+	if _, err := NewVoltageFromString("100"); err == nil {
+		t.Error("voltage")
+	}
 }

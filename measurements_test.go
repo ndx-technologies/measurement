@@ -34,23 +34,53 @@ func TestMeasurementsIsEqual(t *testing.T) {
 			Measurements{Duration: &Duration{Amount: 30, Unit: UnitMinutes}},
 		},
 		{
+			Measurements{Power: &Power{Amount: 1500, Unit: UnitWatts}},
+			Measurements{Power: &Power{Amount: 1500, Unit: UnitWatts}},
+		},
+		{
+			Measurements{DataStorage: &DataStorage{Amount: 512, Unit: UnitGigaBytes}},
+			Measurements{DataStorage: &DataStorage{Amount: 512, Unit: UnitGigaBytes}},
+		},
+		{
+			Measurements{Frequency: &Frequency{Amount: 2.4, Unit: UnitGigaHertz}},
+			Measurements{Frequency: &Frequency{Amount: 2.4, Unit: UnitGigaHertz}},
+		},
+		{
+			Measurements{Charge: &Charge{Amount: 5000, Unit: UnitMilliAmpereHours}},
+			Measurements{Charge: &Charge{Amount: 5000, Unit: UnitMilliAmpereHours}},
+		},
+		{
+			Measurements{Voltage: &Voltage{Amount: 220, Unit: UnitVolts}},
+			Measurements{Voltage: &Voltage{Amount: 220, Unit: UnitVolts}},
+		},
+		{
 			Measurements{
-				Quantity: 2,
-				Mass:     &Mass{Amount: 500, Unit: UnitMilligrams},
-				Volume:   &Volume{Amount: 1, Unit: UnitLiters},
-				Length:   &Length{Amount: 30, Unit: UnitCentiMeters},
-				Area:     &Area{Amount: 2, Unit: UnitSquareMeters},
-				Energy:   &Energy{Amount: 250, Unit: UnitKiloCalories},
-				Duration: &Duration{Amount: 45, Unit: UnitMinutes},
+				Quantity:    2,
+				Mass:        &Mass{Amount: 500, Unit: UnitMilligrams},
+				Volume:      &Volume{Amount: 1, Unit: UnitLiters},
+				Length:      &Length{Amount: 30, Unit: UnitCentiMeters},
+				Area:        &Area{Amount: 2, Unit: UnitSquareMeters},
+				Energy:      &Energy{Amount: 250, Unit: UnitKiloCalories},
+				Duration:    &Duration{Amount: 45, Unit: UnitMinutes},
+				Power:       &Power{Amount: 1500, Unit: UnitWatts},
+				DataStorage: &DataStorage{Amount: 512, Unit: UnitGigaBytes},
+				Frequency:   &Frequency{Amount: 2.4, Unit: UnitGigaHertz},
+				Charge:      &Charge{Amount: 5000, Unit: UnitMilliAmpereHours},
+				Voltage:     &Voltage{Amount: 220, Unit: UnitVolts},
 			},
 			Measurements{
-				Quantity: 2,
-				Mass:     &Mass{Amount: 500, Unit: UnitMilligrams},
-				Volume:   &Volume{Amount: 1, Unit: UnitLiters},
-				Length:   &Length{Amount: 30, Unit: UnitCentiMeters},
-				Area:     &Area{Amount: 2, Unit: UnitSquareMeters},
-				Energy:   &Energy{Amount: 250, Unit: UnitKiloCalories},
-				Duration: &Duration{Amount: 45, Unit: UnitMinutes},
+				Quantity:    2,
+				Mass:        &Mass{Amount: 500, Unit: UnitMilligrams},
+				Volume:      &Volume{Amount: 1, Unit: UnitLiters},
+				Length:      &Length{Amount: 30, Unit: UnitCentiMeters},
+				Area:        &Area{Amount: 2, Unit: UnitSquareMeters},
+				Energy:      &Energy{Amount: 250, Unit: UnitKiloCalories},
+				Duration:    &Duration{Amount: 45, Unit: UnitMinutes},
+				Power:       &Power{Amount: 1500, Unit: UnitWatts},
+				DataStorage: &DataStorage{Amount: 512, Unit: UnitGigaBytes},
+				Frequency:   &Frequency{Amount: 2.4, Unit: UnitGigaHertz},
+				Charge:      &Charge{Amount: 5000, Unit: UnitMilliAmpereHours},
+				Voltage:     &Voltage{Amount: 220, Unit: UnitVolts},
 			},
 		},
 	}
@@ -142,6 +172,46 @@ func TestMeasurementsIsNotEqual(t *testing.T) {
 		{
 			Measurements{Duration: &Duration{Amount: 1, Unit: UnitSeconds}},
 			Measurements{Duration: &Duration{Amount: 1, Unit: UnitMinutes}},
+		},
+		{
+			Measurements{},
+			Measurements{Power: &Power{Amount: 1, Unit: UnitWatts}},
+		},
+		{
+			Measurements{},
+			Measurements{DataStorage: &DataStorage{Amount: 1, Unit: UnitGigaBytes}},
+		},
+		{
+			Measurements{},
+			Measurements{Frequency: &Frequency{Amount: 1, Unit: UnitHertz}},
+		},
+		{
+			Measurements{},
+			Measurements{Charge: &Charge{Amount: 1, Unit: UnitAmpereHours}},
+		},
+		{
+			Measurements{},
+			Measurements{Voltage: &Voltage{Amount: 1, Unit: UnitVolts}},
+		},
+		{
+			Measurements{Power: &Power{Amount: 1, Unit: UnitWatts}},
+			Measurements{Power: &Power{Amount: 1, Unit: UnitKiloWatts}},
+		},
+		{
+			Measurements{DataStorage: &DataStorage{Amount: 1, Unit: UnitGigaBytes}},
+			Measurements{DataStorage: &DataStorage{Amount: 1, Unit: UnitGibiBytes}},
+		},
+		{
+			Measurements{Frequency: &Frequency{Amount: 1, Unit: UnitHertz}},
+			Measurements{Frequency: &Frequency{Amount: 1, Unit: UnitKiloHertz}},
+		},
+		{
+			Measurements{Charge: &Charge{Amount: 1, Unit: UnitAmpereHours}},
+			Measurements{Charge: &Charge{Amount: 1, Unit: UnitMilliAmpereHours}},
+		},
+		{
+			Measurements{Voltage: &Voltage{Amount: 1, Unit: UnitVolts}},
+			Measurements{Voltage: &Voltage{Amount: 1, Unit: UnitMilliVolts}},
 		},
 		{
 			Measurements{
