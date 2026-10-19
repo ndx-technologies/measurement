@@ -1,15 +1,6 @@
 package measurement
 
-import (
-	"errors"
-	"strconv"
-	"strings"
-)
-
-var (
-	ErrInvalidVolumeAmount = errors.New("invalid volume amount")
-	ErrInvalidVolumeUnit   = errors.New("invalid volume unit")
-)
+import "strconv"
 
 type Volume struct {
 	Amount float64    `json:"amount"`
@@ -17,29 +8,10 @@ type Volume struct {
 }
 
 func NewVolumeFromString(s string) (*Volume, error) {
-	var unit UnitVolume
-	var maxl int
-	for _, u := range UnitVolumeAll {
-		if strings.HasSuffix(s, u.String()) && len(u.String()) > maxl {
-			unit = u
-			maxl = len(u.String())
-		}
-	}
-
-	if unit == UnitVolumeUnknown {
-		return nil, ErrInvalidVolumeUnit
-	}
-
-	lenAmount := len(s) - len(unit.String())
-	if lenAmount <= 0 {
-		return nil, ErrInvalidVolumeAmount
-	}
-
-	amount, err := strconv.ParseFloat(s[:lenAmount], 64)
+	amount, unit, err := amountUnitFromString(s, MeasureTypeVolume, UnitVolumeAll[:], UnitVolumeUnknown, UnitVolume.String)
 	if err != nil {
 		return nil, err
 	}
-
 	return &Volume{Amount: amount, Unit: unit}, nil
 }
 

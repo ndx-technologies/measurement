@@ -5,26 +5,33 @@ import (
 )
 
 func TestAllUnitUnique(t *testing.T) {
-	var unitsMass []string
+	var units []string
 
 	for _, q := range UnitMassAll {
-		unitsMass = append(unitsMass, q.String())
+		units = append(units, q.String())
 	}
-
-	var unitsVolume []string
 	for _, q := range UnitVolumeAll {
-		unitsVolume = append(unitsVolume, q.String())
+		units = append(units, q.String())
+	}
+	for _, q := range UnitLengthAll {
+		units = append(units, q.String())
+	}
+	for _, q := range UnitAreaAll {
+		units = append(units, q.String())
+	}
+	for _, q := range UnitEnergyAll {
+		units = append(units, q.String())
+	}
+	for _, q := range UnitDurationAll {
+		units = append(units, q.String())
 	}
 
-	all := make(map[string]bool, len(unitsMass)+len(unitsVolume))
-	for _, q := range unitsMass {
-		all[q] = true
-	}
-	for _, q := range unitsVolume {
+	all := make(map[string]bool, len(units))
+	for _, q := range units {
 		all[q] = true
 	}
 
-	if len(all) != len(unitsMass)+len(unitsVolume) {
+	if len(all) != len(units) {
 		t.Error("duplicates found")
 	}
 }

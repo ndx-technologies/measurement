@@ -14,13 +14,21 @@ func (s *MeasureType) UnmarshalText(text []byte) error {
 		*s = MeasureTypeMass
 	case "volume":
 		*s = MeasureTypeVolume
+	case "length":
+		*s = MeasureTypeLength
+	case "area":
+		*s = MeasureTypeArea
+	case "energy":
+		*s = MeasureTypeEnergy
+	case "duration":
+		*s = MeasureTypeDuration
 	default:
 		return ErrUnknownMeasureType
 	}
 	return nil
 }
 
-var seq_bytes_MeasureType = [...][]byte{[]byte(""), []byte("mass"), []byte("volume")}
+var seq_bytes_MeasureType = [...][]byte{[]byte(""), []byte("mass"), []byte("volume"), []byte("length"), []byte("area"), []byte("energy"), []byte("duration")}
 
 func (s MeasureType) MarshalText() ([]byte, error) { return s.AppendText(nil) }
 
@@ -32,12 +40,20 @@ func (s MeasureType) AppendText(b []byte) ([]byte, error) {
 		return append(b, seq_bytes_MeasureType[1]...), nil
 	case MeasureTypeVolume:
 		return append(b, seq_bytes_MeasureType[2]...), nil
+	case MeasureTypeLength:
+		return append(b, seq_bytes_MeasureType[3]...), nil
+	case MeasureTypeArea:
+		return append(b, seq_bytes_MeasureType[4]...), nil
+	case MeasureTypeEnergy:
+		return append(b, seq_bytes_MeasureType[5]...), nil
+	case MeasureTypeDuration:
+		return append(b, seq_bytes_MeasureType[6]...), nil
 	default:
 		return nil, ErrUnknownMeasureType
 	}
 }
 
-var seq_string_MeasureType = [...]string{"", "mass", "volume"}
+var seq_string_MeasureType = [...]string{"", "mass", "volume", "length", "area", "energy", "duration"}
 
 func (s MeasureType) String() string {
 	switch s {
@@ -47,6 +63,14 @@ func (s MeasureType) String() string {
 		return seq_string_MeasureType[1]
 	case MeasureTypeVolume:
 		return seq_string_MeasureType[2]
+	case MeasureTypeLength:
+		return seq_string_MeasureType[3]
+	case MeasureTypeArea:
+		return seq_string_MeasureType[4]
+	case MeasureTypeEnergy:
+		return seq_string_MeasureType[5]
+	case MeasureTypeDuration:
+		return seq_string_MeasureType[6]
 	default:
 		return ""
 	}

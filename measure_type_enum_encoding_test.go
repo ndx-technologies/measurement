@@ -12,15 +12,15 @@ import (
 )
 
 func ExampleMeasureType_MarshalText() {
-	for _, v := range []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume} {
+	for _, v := range []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume, MeasureTypeLength, MeasureTypeArea, MeasureTypeEnergy, MeasureTypeDuration} {
 		b, _ := v.MarshalText()
 		fmt.Printf("%s ", string(b))
 	}
-	// Output:  mass volume
+	// Output:  mass volume length area energy duration
 }
 
 func ExampleMeasureType_UnmarshalText() {
-	for _, s := range []string{"", "mass", "volume"} {
+	for _, s := range []string{"", "mass", "volume", "length", "area", "energy", "duration"} {
 		var v MeasureType
 		if err := (&v).UnmarshalText([]byte(s)); err != nil {
 			fmt.Println(err)
@@ -29,7 +29,7 @@ func ExampleMeasureType_UnmarshalText() {
 }
 
 func TestMeasureType_MarshalText_UnmarshalText(t *testing.T) {
-	for _, v := range []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume} {
+	for _, v := range []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume, MeasureTypeLength, MeasureTypeArea, MeasureTypeEnergy, MeasureTypeDuration} {
 		b, err := v.MarshalText()
 		if err != nil {
 			t.Errorf("cannot encode: %s", err)
@@ -63,10 +63,10 @@ func TestMeasureType_JSON(t *testing.T) {
 		Values []MeasureType `json:"values"`
 	}
 
-	values := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume}
+	values := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume, MeasureTypeLength, MeasureTypeArea, MeasureTypeEnergy, MeasureTypeDuration}
 
 	var v V
-	s := `{"values":["","mass","volume"]}`
+	s := `{"values":["","mass","volume","length","area","energy","duration"]}`
 	json.Unmarshal([]byte(s), &v)
 
 	if len(v.Values) != len(values) {
@@ -110,7 +110,7 @@ func BenchmarkMeasureType_UnmarshalText(b *testing.B) {
 func BenchmarkMeasureType_AppendText(b *testing.B) {
 	bb := make([]byte, 10, 1000)
 
-	vs := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume}
+	vs := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume, MeasureTypeLength, MeasureTypeArea, MeasureTypeEnergy, MeasureTypeDuration}
 	v := vs[rand.Intn(len(vs))]
 
 	for b.Loop() {
@@ -119,7 +119,7 @@ func BenchmarkMeasureType_AppendText(b *testing.B) {
 }
 
 func BenchmarkMeasureType_MarshalText(b *testing.B) {
-	vs := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume}
+	vs := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume, MeasureTypeLength, MeasureTypeArea, MeasureTypeEnergy, MeasureTypeDuration}
 	v := vs[rand.Intn(len(vs))]
 
 	for b.Loop() {
@@ -128,8 +128,8 @@ func BenchmarkMeasureType_MarshalText(b *testing.B) {
 }
 
 func TestMeasureType_String(t *testing.T) {
-	values := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume}
-	tags := []string{"", "mass", "volume"}
+	values := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume, MeasureTypeLength, MeasureTypeArea, MeasureTypeEnergy, MeasureTypeDuration}
+	tags := []string{"", "mass", "volume", "length", "area", "energy", "duration"}
 
 	for i := range values {
 		if s := values[i].String(); s != tags[i] {
@@ -139,7 +139,7 @@ func TestMeasureType_String(t *testing.T) {
 }
 
 func BenchmarkMeasureType_String(b *testing.B) {
-	vs := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume}
+	vs := []MeasureType{MeasureTypeUndefined, MeasureTypeMass, MeasureTypeVolume, MeasureTypeLength, MeasureTypeArea, MeasureTypeEnergy, MeasureTypeDuration}
 	v := vs[rand.Intn(len(vs))]
 
 	for b.Loop() {

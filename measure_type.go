@@ -7,4 +7,8 @@ const (
 	MeasureTypeUndefined MeasureType = iota // json:""
 	MeasureTypeMass                         // json:"mass"
 	MeasureTypeVolume                       // json:"volume"
+	MeasureTypeLength                       // json:"length"
+	MeasureTypeArea                         // json:"area"
+	MeasureTypeEnergy                       // json:"energy"
+	MeasureTypeDuration                     // json:"duration"
 )

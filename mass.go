@@ -1,15 +1,6 @@
 package measurement
 
-import (
-	"errors"
-	"strconv"
-	"strings"
-)
-
-var (
-	ErrInvalidMassAmount = errors.New("invalid mass amount")
-	ErrInvalidMassUnit   = errors.New("invalid mass unit")
-)
+import "strconv"
 
 type Mass struct {
 	Amount float64  `json:"amount"`
@@ -17,29 +8,10 @@ type Mass struct {
 }
 
 func NewMassFromString(s string) (*Mass, error) {
-	var unit UnitMass
-	var maxl int
-	for _, u := range UnitMassAll {
-		if strings.HasSuffix(s, u.String()) && len(u.String()) > maxl {
-			unit = u
-			maxl = len(u.String())
-		}
-	}
-
-	if unit == UnitMassUnknown {
-		return nil, ErrInvalidMassUnit
-	}
-
-	lenAmount := len(s) - len(unit.String())
-	if lenAmount <= 0 {
-		return nil, ErrInvalidMassAmount
-	}
-
-	amount, err := strconv.ParseFloat(s[:lenAmount], 64)
+	amount, unit, err := amountUnitFromString(s, MeasureTypeMass, UnitMassAll[:], UnitMassUnknown, UnitMass.String)
 	if err != nil {
 		return nil, err
 	}
-
 	return &Mass{Amount: amount, Unit: unit}, nil
 }
 
