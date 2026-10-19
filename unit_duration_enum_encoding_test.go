@@ -16,11 +16,11 @@ func ExampleUnitDuration_MarshalText() {
 		b, _ := v.MarshalText()
 		fmt.Printf("%s ", string(b))
 	}
-	// Output:  ns µs ms s min h d wk mo y
+	// Output:  ns µs ms s min h d week month y
 }
 
 func ExampleUnitDuration_UnmarshalText() {
-	for _, s := range []string{"", "ns", "µs", "ms", "s", "min", "h", "d", "wk", "mo", "y"} {
+	for _, s := range []string{"", "ns", "µs", "ms", "s", "min", "h", "d", "week", "month", "y"} {
 		var v UnitDuration
 		if err := (&v).UnmarshalText([]byte(s)); err != nil {
 			fmt.Println(err)
@@ -66,7 +66,7 @@ func TestUnitDuration_JSON(t *testing.T) {
 	values := []UnitDuration{UnitDurationUnknown, UnitNanoSeconds, UnitMicroSeconds, UnitMilliSeconds, UnitSeconds, UnitMinutes, UnitHours, UnitDays, UnitWeeks, UnitMonths, UnitYears}
 
 	var v V
-	s := `{"values":["","ns","µs","ms","s","min","h","d","wk","mo","y"]}`
+	s := `{"values":["","ns","µs","ms","s","min","h","d","week","month","y"]}`
 	json.Unmarshal([]byte(s), &v)
 
 	if len(v.Values) != len(values) {
@@ -129,7 +129,7 @@ func BenchmarkUnitDuration_MarshalText(b *testing.B) {
 
 func TestUnitDuration_String(t *testing.T) {
 	values := []UnitDuration{UnitDurationUnknown, UnitNanoSeconds, UnitMicroSeconds, UnitMilliSeconds, UnitSeconds, UnitMinutes, UnitHours, UnitDays, UnitWeeks, UnitMonths, UnitYears}
-	tags := []string{"", "ns", "µs", "ms", "s", "min", "h", "d", "wk", "mo", "y"}
+	tags := []string{"", "ns", "µs", "ms", "s", "min", "h", "d", "week", "month", "y"}
 
 	for i := range values {
 		if s := values[i].String(); s != tags[i] {

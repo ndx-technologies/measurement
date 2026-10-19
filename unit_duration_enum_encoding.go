@@ -24,9 +24,9 @@ func (s *UnitDuration) UnmarshalText(text []byte) error {
 		*s = UnitHours
 	case "d":
 		*s = UnitDays
-	case "wk":
+	case "week":
 		*s = UnitWeeks
-	case "mo":
+	case "month":
 		*s = UnitMonths
 	case "y":
 		*s = UnitYears
@@ -36,7 +36,7 @@ func (s *UnitDuration) UnmarshalText(text []byte) error {
 	return nil
 }
 
-var seq_bytes_UnitDuration = [...][]byte{[]byte(""), []byte("ns"), []byte("µs"), []byte("ms"), []byte("s"), []byte("min"), []byte("h"), []byte("d"), []byte("wk"), []byte("mo"), []byte("y")}
+var seq_bytes_UnitDuration = [...][]byte{[]byte(""), []byte("ns"), []byte("µs"), []byte("ms"), []byte("s"), []byte("min"), []byte("h"), []byte("d"), []byte("week"), []byte("month"), []byte("y")}
 
 func (s UnitDuration) MarshalText() ([]byte, error) { return s.AppendText(nil) }
 
@@ -69,7 +69,7 @@ func (s UnitDuration) AppendText(b []byte) ([]byte, error) {
 	}
 }
 
-var seq_string_UnitDuration = [...]string{"", "ns", "µs", "ms", "s", "min", "h", "d", "wk", "mo", "y"}
+var seq_string_UnitDuration = [...]string{"", "ns", "µs", "ms", "s", "min", "h", "d", "week", "month", "y"}
 
 func (s UnitDuration) String() string {
 	switch s {

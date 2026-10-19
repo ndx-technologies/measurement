@@ -52,8 +52,8 @@ const (
 	UnitMinutes                             // json:"min"
 	UnitHours                               // json:"h"
 	UnitDays                                // json:"d"
-	UnitWeeks                               // json:"wk"
-	UnitMonths                              // json:"mo"
+	UnitWeeks                               // json:"week"
+	UnitMonths                              // json:"month"
 	UnitYears                               // json:"y"
 )
 

@@ -14,16 +14,16 @@ func ExampleNewDurationFromString() {
 
 func TestDuration(t *testing.T) {
 	tests := map[string]Duration{
-		"5ns":   {Amount: 5, Unit: UnitNanoSeconds},
-		"500µs": {Amount: 500, Unit: UnitMicroSeconds},
-		"250ms": {Amount: 250, Unit: UnitMilliSeconds},
-		"30s":   {Amount: 30, Unit: UnitSeconds},
-		"90min": {Amount: 90, Unit: UnitMinutes},
-		"2h":    {Amount: 2, Unit: UnitHours},
-		"3d":    {Amount: 3, Unit: UnitDays},
-		"2wk":   {Amount: 2, Unit: UnitWeeks},
-		"3mo":   {Amount: 3, Unit: UnitMonths},
-		"2y":    {Amount: 2, Unit: UnitYears},
+		"5ns":    {Amount: 5, Unit: UnitNanoSeconds},
+		"500µs":  {Amount: 500, Unit: UnitMicroSeconds},
+		"250ms":  {Amount: 250, Unit: UnitMilliSeconds},
+		"30s":    {Amount: 30, Unit: UnitSeconds},
+		"90min":  {Amount: 90, Unit: UnitMinutes},
+		"2h":     {Amount: 2, Unit: UnitHours},
+		"3d":     {Amount: 3, Unit: UnitDays},
+		"2week":  {Amount: 2, Unit: UnitWeeks},
+		"3month": {Amount: 3, Unit: UnitMonths},
+		"2y":     {Amount: 2, Unit: UnitYears},
 	}
 	for s, v := range tests {
 		t.Run(s, func(t *testing.T) {
